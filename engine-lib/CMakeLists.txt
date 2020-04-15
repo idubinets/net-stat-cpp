@@ -1,3 +1,10 @@
+set(engine-lib_DEFINITIONS
+-DBOOST_DATE_TIME_NO_LIB
+-DBOOST_REGEX_NO_LIB
+)
+set(engine-lib_DEFINITIONS ${engine-lib_DEFINITIONS} PARENT_SCOPE)
+add_definitions(${engine-lib_DEFINITIONS})
+
 set(HEADERS
 Client.h
 Server.h
@@ -14,5 +21,5 @@ ${SOURCES} ${HEADERS}
 
 add_library(engine-lib STATIC ${PROJECT_CONTENT})
 
-target_include_directories(engine-lib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(engine-lib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} PRIVATE ${Boost_INCLUDE_DIR})
                           

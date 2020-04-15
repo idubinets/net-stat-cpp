@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <boost/program_options.hpp>
+#include <boost/asio.hpp>
 
 int main(int argc, char* argv[]){
 	try {
@@ -31,24 +32,26 @@ int main(int argc, char* argv[]){
 			return 0;
 		}
 		if (vm.count(serverOptionName)) {
-			Server server;
-			std::cout << "Server is running..." << std::endl;
+			boost::asio::io_context io_context;
+			auto server = std::make_shared<Server>(io_context, boost::asio::ip::make_address(ip), port);
+			server->Start();
+			io_context.run();
 		}
 		else {
 			if (vm.count(clientOptionName)) {
-				Client client;
-				std::cout << "Client is running..." << std::endl;
+				boost::asio::io_context io_context;
+				auto client = std::make_shared<Client>(io_context, boost::asio::ip::make_address(ip), port);
+				client->Start();
+				io_context.run();
 			}
 			else {
 				std::cout << "Neither client nor server were selected" << std::endl;
 				return 1;
 			}
 		}
-		std::cout << "ip = " << ip << std::endl;
-		std::cout << "port = " << port << std::endl;
 	}
 	catch (const std::exception& e) {
-		std::cout << e.what() << std::endl;
+		std::cerr << e.what() << std::endl;
 		return 1;
 	}
 	return 0;

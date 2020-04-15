@@ -1,3 +1,5 @@
+add_definitions(${engine-lib_DEFINITIONS})
+
 set(HEADERS
 )
 
