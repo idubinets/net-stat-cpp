@@ -1,3 +1,5 @@
+#include "TMessage.h"
+
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 
@@ -56,15 +58,15 @@ void Server::HandleRead(boost::shared_ptr<tcp::socket> socket, std::string* read
 void Server::Write(boost::shared_ptr<tcp::socket> socket, boost::shared_ptr<char[]>  buffer)
 {
 	boost::asio::async_write(*socket,
-		boost::asio::buffer(&buffer[0], messageLength_),
+		boost::asio::buffer(&buffer[0], sizeof(TMessage<int>)),
 		boost::bind(&Server::HandleWrite, this->shared_from_this(), boost::asio::placeholders::error));
 }
 
 void Server::MulticastNumberOfConnectedClients()
 {
-	boost::shared_ptr<char[]> buffer = boost::shared_ptr<char[]>(new char[messageLength_]);
+	boost::shared_ptr<char[]> buffer = boost::shared_ptr<char[]>(new char[sizeof(TMessage<int>)]);
 	std::copy(static_cast<const char*>(static_cast<const void*>(&numberOfConnectedClients_)),
-		static_cast<const char*>(static_cast<const void*>(&numberOfConnectedClients_)) + messageLength_,
+		static_cast<const char*>(static_cast<const void*>(&numberOfConnectedClients_)) + sizeof(TMessage<int>),
 		&buffer[0]);
 	std::for_each(participants_.begin(), participants_.end(),
 		boost::bind(&Server::Write, this->shared_from_this(), _1, buffer));

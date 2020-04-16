@@ -27,5 +27,4 @@ private:
 	boost::asio::io_context& io_context_;
 	tcp::acceptor acceptor_;
 	int numberOfConnectedClients_;
-	enum { messageLength_ = 4 };
 };

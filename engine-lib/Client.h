@@ -3,6 +3,8 @@
 #include <boost/asio.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
+#include "TMessage.h"
+
 using boost::asio::ip::tcp;
 
 class Client : public boost::enable_shared_from_this<Client> {
@@ -18,6 +20,5 @@ private:
 private:
 	tcp::endpoint endpoint_;
 	tcp::socket socket_;
-	enum { messageLength_ = 4 };
-	char readMessage_[messageLength_];
+	char readMessage_[sizeof(TMessage<int>)];
 };

@@ -8,6 +8,7 @@ add_definitions(${engine-lib_DEFINITIONS})
 set(HEADERS
 Client.h
 Server.h
+TMessage.h
 )
 
 set(SOURCES
