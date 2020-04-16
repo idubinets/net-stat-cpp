@@ -1,2 +1,1 @@
-template<typename Type> 
-using TMessage = Type;
+using TMessage = int;

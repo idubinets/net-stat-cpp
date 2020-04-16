@@ -20,7 +20,7 @@ void Client::HandleConnect(const boost::system::error_code& error)
 	{
 		std::cout << "Connection is UP\n";
 		boost::asio::async_read(socket_,
-			boost::asio::buffer(readMessage_, sizeof(TMessage<int>)),
+			boost::asio::buffer(readMessage_, sizeof(TMessage)),
 			boost::bind(&Client::HandleRead, shared_from_this(), boost::asio::placeholders::error));
 	}
 	else
@@ -35,7 +35,7 @@ void Client::HandleRead(const boost::system::error_code& error)
 	{
 		std::cout << "Connected clients: " << *(int *)readMessage_ << "\n";
 		boost::asio::async_read(socket_,
-			boost::asio::buffer(readMessage_, sizeof(TMessage<int>)),
+			boost::asio::buffer(readMessage_, sizeof(TMessage)),
 			boost::bind(&Client::HandleRead, shared_from_this(), boost::asio::placeholders::error));
 	}
 	else
