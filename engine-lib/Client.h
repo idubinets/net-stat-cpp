@@ -1,10 +1,7 @@
 #pragma once
 
-#include <iostream>
-#include <memory>
-#include <string>
-#include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include <boost/enable_shared_from_this.hpp>
 
 using boost::asio::ip::tcp;
 

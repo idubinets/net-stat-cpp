@@ -1,8 +1,5 @@
 #include <iostream>
-#include <string>
 #include <boost/bind.hpp>
-#include <boost/asio.hpp>
-#include <boost/enable_shared_from_this.hpp>
 
 #include "Client.h"
 
@@ -14,7 +11,7 @@ Client::Client(boost::asio::io_context& io_context, const boost::asio::ip::addre
 void Client::Start()
 {
 	socket_.async_connect(endpoint_,
-		boost::bind(&Client::HandleConnect, this->shared_from_this(), boost::asio::placeholders::error));
+		boost::bind(&Client::HandleConnect, shared_from_this(), boost::asio::placeholders::error));
 }
 
 void Client::HandleConnect(const boost::system::error_code& error)
