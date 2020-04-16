@@ -1,0 +1,2 @@
+[master 93de389] Replace std::string readMessage with std::shared_ptr<char[]>. And replace this-
+ 2 files changed, 8 insertions(+), 9 deletions(-)

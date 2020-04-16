@@ -24,5 +24,5 @@ add_library(engine-lib STATIC ${PROJECT_CONTENT})
 
 find_package(Boost REQUIRED)
 
-target_include_directories(engine-lib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} PRIVATE ${Boost_INCLUDE_DIR})
+target_include_directories(engine-lib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} PUBLIC ${Boost_INCLUDE_DIR})
                           
