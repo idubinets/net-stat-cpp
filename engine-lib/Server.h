@@ -1,9 +1,4 @@
-#ifndef _Server_h_
-#define _Server_h_
-
-#ifdef _MSC_VER
 #pragma once
-#endif // _MSC_VER
 
 #include <set>
 #include <string>
@@ -41,5 +36,3 @@ private:
 	int numberOfConnectedClients_;
 	enum { messageLength_ = 4 };
 };
-
-#endif // !_Server_h_

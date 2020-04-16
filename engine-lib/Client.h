@@ -1,9 +1,4 @@
-#ifndef _Client_h_
-#define _Client_h_
-
-#ifdef _MSC_VER
 #pragma once
-#endif // _MSC_VER
 
 #include <iostream>
 #include <memory>
@@ -36,5 +31,3 @@ private:
 	enum { messageLength_ = 4 };
 	char readMessage_[messageLength_];
 };
-
-#endif // !_Client_h_
