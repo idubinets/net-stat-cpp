@@ -21,7 +21,7 @@ void Server::StartAccept()
 {
 	auto socket = boost::make_shared<tcp::socket>(io_context_);
 	acceptor_.async_accept(*socket,
-		boost::bind(&Server::HandleAccept, this->shared_from_this(), socket, boost::asio::placeholders::error));
+		boost::bind(&Server::HandleAccept, shared_from_this(), socket, boost::asio::placeholders::error));
 }
 
 void Server::HandleAccept(boost::shared_ptr<tcp::socket> socket, const boost::system::error_code& error)
@@ -38,17 +38,16 @@ void Server::HandleAccept(boost::shared_ptr<tcp::socket> socket, const boost::sy
 
 void Server::Read(boost::shared_ptr<tcp::socket> socket)
 {
-	std::string* readMessage = new std::string();
+	boost::shared_ptr<char[]> readMessage = boost::shared_ptr<char[]>(new char[1]);
 	boost::asio::async_read(*socket,
-		boost::asio::buffer(readMessage, 1),
-		boost::bind(&Server::HandleRead, this->shared_from_this(), socket, readMessage, boost::asio::placeholders::error));
+		boost::asio::buffer(&readMessage[0], 1),
+		boost::bind(&Server::HandleRead, shared_from_this(), socket, readMessage, boost::asio::placeholders::error));
 }
 
-void Server::HandleRead(boost::shared_ptr<tcp::socket> socket, std::string* readMessage, const boost::system::error_code& error)
+void Server::HandleRead(boost::shared_ptr<tcp::socket> socket, boost::shared_ptr<char[]> readMessage, const boost::system::error_code& error)
 {
 	if (error)
 	{
-		delete readMessage;
 		participants_.erase(socket);
 		numberOfConnectedClients_--;
 		MulticastNumberOfConnectedClients();
@@ -59,7 +58,7 @@ void Server::Write(boost::shared_ptr<tcp::socket> socket, boost::shared_ptr<char
 {
 	boost::asio::async_write(*socket,
 		boost::asio::buffer(&buffer[0], sizeof(TMessage<int>)),
-		boost::bind(&Server::HandleWrite, this->shared_from_this(), boost::asio::placeholders::error));
+		boost::bind(&Server::HandleWrite, shared_from_this(), boost::asio::placeholders::error));
 }
 
 void Server::MulticastNumberOfConnectedClients()
@@ -69,5 +68,5 @@ void Server::MulticastNumberOfConnectedClients()
 		static_cast<const char*>(static_cast<const void*>(&numberOfConnectedClients_)) + sizeof(TMessage<int>),
 		&buffer[0]);
 	std::for_each(participants_.begin(), participants_.end(),
-		boost::bind(&Server::Write, this->shared_from_this(), _1, buffer));
+		boost::bind(&Server::Write, shared_from_this(), _1, buffer));
 }

@@ -17,7 +17,7 @@ private:
 	void StartAccept();
 	void HandleAccept(boost::shared_ptr<tcp::socket> socket, const boost::system::error_code& error);
 	void Read(boost::shared_ptr<tcp::socket> socket);
-	void HandleRead(boost::shared_ptr<tcp::socket> socket, std::string* readMessage, const boost::system::error_code& error);
+	void HandleRead(boost::shared_ptr<tcp::socket> socket, boost::shared_ptr<char[]> readMessage, const boost::system::error_code& error);
 	void Write(boost::shared_ptr<tcp::socket> socket, boost::shared_ptr<char[]>  buffer);
 	void HandleWrite(const boost::system::error_code& error) {}
 	void MulticastNumberOfConnectedClients();
