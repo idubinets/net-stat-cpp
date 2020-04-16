@@ -1,8 +1,8 @@
 #include <iostream>
-#include <memory>
 #include <string>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include <boost/enable_shared_from_this.hpp>
 
 #include "Client.h"
 
@@ -39,7 +39,7 @@ void Client::HandleRead(const boost::system::error_code& error)
 		std::cout << "Connected clients: " << *(int *)readMessage_ << "\n";
 		boost::asio::async_read(socket_,
 			boost::asio::buffer(readMessage_, messageLength_),
-			boost::bind(&Client::HandleRead, this->shared_from_this(), boost::asio::placeholders::error));
+			boost::bind(&Client::HandleRead, shared_from_this(), boost::asio::placeholders::error));
 	}
 	else
 	{

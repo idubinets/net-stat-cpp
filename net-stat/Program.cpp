@@ -4,6 +4,8 @@
 #include <iostream>
 #include <boost/program_options.hpp>
 #include <boost/asio.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 int main(int argc, char* argv[]){
 	try {
@@ -33,14 +35,14 @@ int main(int argc, char* argv[]){
 		}
 		if (vm.count(serverOptionName)) {
 			boost::asio::io_context io_context;
-			auto server = std::make_shared<Server>(io_context, boost::asio::ip::make_address(ip), port);
+			auto server = boost::make_shared<Server>(io_context, boost::asio::ip::make_address(ip), port);
 			server->Start();
 			io_context.run();
 		}
 		else {
 			if (vm.count(clientOptionName)) {
 				boost::asio::io_context io_context;
-				auto client = std::make_shared<Client>(io_context, boost::asio::ip::make_address(ip), port);
+				auto client = boost::make_shared<Client>(io_context, boost::asio::ip::make_address(ip), port);
 				client->Start();
 				io_context.run();
 			}

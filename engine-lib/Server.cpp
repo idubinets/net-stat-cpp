@@ -19,12 +19,12 @@ void Server::Start()
 
 void Server::StartAccept()
 {
-	auto socket = std::make_shared<tcp::socket>(io_context_);
+	auto socket = boost::make_shared<tcp::socket>(io_context_);
 	acceptor_.async_accept(*socket,
 		boost::bind(&Server::HandleAccept, this->shared_from_this(), socket, boost::asio::placeholders::error));
 }
 
-void Server::HandleAccept(std::shared_ptr<tcp::socket> socket, const boost::system::error_code& error)
+void Server::HandleAccept(boost::shared_ptr<tcp::socket> socket, const boost::system::error_code& error)
 {
 	if (!error)
 	{
@@ -36,7 +36,7 @@ void Server::HandleAccept(std::shared_ptr<tcp::socket> socket, const boost::syst
 	StartAccept();
 }
 
-void Server::Read(std::shared_ptr<tcp::socket> socket)
+void Server::Read(boost::shared_ptr<tcp::socket> socket)
 {
 	std::string* readMessage = new std::string();
 	boost::asio::async_read(*socket,
@@ -44,7 +44,7 @@ void Server::Read(std::shared_ptr<tcp::socket> socket)
 		boost::bind(&Server::HandleRead, this->shared_from_this(), socket, readMessage, boost::asio::placeholders::error));
 }
 
-void Server::HandleRead(std::shared_ptr<tcp::socket> socket, std::string* readMessage, const boost::system::error_code& error)
+void Server::HandleRead(boost::shared_ptr<tcp::socket> socket, std::string* readMessage, const boost::system::error_code& error)
 {
 	if (error)
 	{
@@ -55,7 +55,7 @@ void Server::HandleRead(std::shared_ptr<tcp::socket> socket, std::string* readMe
 	}
 }
 
-void Server::Write(std::shared_ptr<tcp::socket> socket, std::shared_ptr<char[]>  buffer)
+void Server::Write(boost::shared_ptr<tcp::socket> socket, boost::shared_ptr<char[]>  buffer)
 {
 	boost::asio::async_write(*socket,
 		boost::asio::buffer(&buffer[0], messageLength_),
@@ -64,7 +64,7 @@ void Server::Write(std::shared_ptr<tcp::socket> socket, std::shared_ptr<char[]> 
 
 void Server::MulticastNumberOfConnectedClients()
 {
-	std::shared_ptr<char[]> buffer = std::shared_ptr<char[]>(new char[messageLength_]);
+	boost::shared_ptr<char[]> buffer = boost::shared_ptr<char[]>(new char[messageLength_]);
 	std::copy(static_cast<const char*>(static_cast<const void*>(&numberOfConnectedClients_)),
 		static_cast<const char*>(static_cast<const void*>(&numberOfConnectedClients_)) + messageLength_,
 		&buffer[0]);
