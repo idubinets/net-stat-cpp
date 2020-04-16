@@ -2,7 +2,6 @@ set(engine-lib_DEFINITIONS
 -DBOOST_DATE_TIME_NO_LIB
 -DBOOST_REGEX_NO_LIB
 )
-set(engine-lib_DEFINITIONS ${engine-lib_DEFINITIONS} PARENT_SCOPE)
 add_definitions(${engine-lib_DEFINITIONS})
 
 set(HEADERS

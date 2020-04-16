@@ -1,4 +1,8 @@
-add_definitions(${engine-lib_DEFINITIONS})
+set(net-stat_DEFINITIONS
+-DBOOST_DATE_TIME_NO_LIB
+-DBOOST_REGEX_NO_LIB
+)
+add_definitions(${net-stat_DEFINITIONS})
 
 set(HEADERS
 )
