@@ -7,6 +7,16 @@
 
 using boost::asio::ip::tcp;
 
+Server::Server(boost::asio::io_context& io_context, const boost::asio::ip::address& ip, const int port)
+	: io_context_(io_context), acceptor_(io_context, tcp::endpoint(ip, port)), numberOfConnectedClients_(0)
+{
+}
+
+void Server::Start()
+{
+	StartAccept();
+}
+
 void Server::StartAccept()
 {
 	auto socket = std::make_shared<tcp::socket>(io_context_);

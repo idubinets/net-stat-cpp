@@ -6,6 +6,11 @@
 
 #include "Client.h"
 
+Client::Client(boost::asio::io_context& io_context, const boost::asio::ip::address& ip, const int port)
+	: socket_(io_context), endpoint_(ip, port)
+{
+}
+
 void Client::Start()
 {
 	socket_.async_connect(endpoint_,
@@ -40,4 +45,9 @@ void Client::HandleRead(const boost::system::error_code& error)
 	{
 		Close();
 	}
+}
+
+void Client::Close()
+{
+	socket_.close();
 }
