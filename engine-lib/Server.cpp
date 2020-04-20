@@ -8,12 +8,15 @@
 using boost::asio::ip::tcp;
 
 Server::Server(boost::asio::io_context& io_context, const boost::asio::ip::address& ip, const int port)
-	: io_context_(io_context), acceptor_(io_context, tcp::endpoint(ip, port)), numberOfConnectedClients_(0)
+	: io_context_(io_context), endpoint_(ip, port), acceptor_(io_context), numberOfConnectedClients_(0)
 {
 }
 
 void Server::Start()
 {
+	acceptor_.open(endpoint_.protocol());
+	acceptor_.bind(endpoint_);
+	acceptor_.listen();
 	StartAccept();
 }
 

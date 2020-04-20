@@ -25,6 +25,7 @@ private:
 private:
 	std::set<boost::shared_ptr<tcp::socket>> participants_;
 	boost::asio::io_context& io_context_;
+	boost::asio::ip::tcp::endpoint endpoint_;
 	tcp::acceptor acceptor_;
 	int numberOfConnectedClients_;
 };
