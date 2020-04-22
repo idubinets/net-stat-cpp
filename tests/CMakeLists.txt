@@ -19,9 +19,11 @@ ${SOURCES} ${HEADERS}
 add_executable(tests ${PROJECT_CONTENT})
 
 find_package(Catch2 REQUIRED)
+find_package(Threads REQUIRED)
 
 set(LIBRARIES
 Catch2::Catch2
+${CMAKE_THREAD_LIBS_INIT}
 engine-lib 
 )
 
