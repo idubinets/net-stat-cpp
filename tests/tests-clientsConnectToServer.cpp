@@ -5,7 +5,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/asio.hpp>
-#include <thread>
 #include <iostream>
 
 TEST_CASE("Clients connect to server") 
@@ -85,12 +84,11 @@ TEST_CASE("Clients connect to server")
 		io_context_client_1.run_one();
 		io_context_server.run_one();
 
-		std::thread t([&]() {
+		{
 			boost::asio::io_context io_context_client_2;
 			auto client_2 = boost::make_shared<Client>(io_context_client_2, boost::asio::ip::make_address(ip), port);
 			client_2->Start();
-		});
-		t.join();
+		}
 
 		io_context_server.run_one();
 		io_context_client_1.run_one();
