@@ -9,7 +9,11 @@ set(HEADERS
 
 set(SOURCES
 tests-main.cpp
-tests-clientsConnectToServer.cpp
+tests-clientConnectToTheServer.cpp
+tests-serverStartListeningToConnections.cpp
+tests-clientGetsInformationFromTheServerAboutTheAmountOfConnectedClients.cpp
+tests-connectOneMoreClientAndTheyBothReceivedTheMessageWithClientsCount.cpp
+tests-disconnectOneOfTheClientAndTheOtherConnectedClientsGetsTheMessageWithClientsCount.cpp
 )
 
 set(PROJECT_CONTENT
