@@ -69,7 +69,7 @@ TEST_CASE("Client gets information from the server about the amount of connected
 }
 
 TEST_CASE("Connect one more client and they both received the message with \"clients count\"",
-	"[client][multiple][message][clients count]")
+	"[client][multiple][message][on-send]")
 {
 	std::stringstream stream;
 	std::streambuf* oldStream = std::cout.rdbuf(stream.rdbuf());
@@ -104,7 +104,7 @@ TEST_CASE("Connect one more client and they both received the message with \"cli
 }
 
 TEST_CASE("Disconnect one of the client and the other connected clients gets the message with \"clients count\"",
-	"[client][single][disconnect][message][clients count]")
+	"[client][single][message][on-disconnect]")
 {
 	std::stringstream stream;
 	std::streambuf* oldStream = std::cout.rdbuf(stream.rdbuf());
