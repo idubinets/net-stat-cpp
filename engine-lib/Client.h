@@ -18,7 +18,7 @@ private:
 	void Close();
 
 private:
-	tcp::endpoint endPoint_;
-	tcp::socket socket_;
+	tcp::endpoint m_endPoint;
+	tcp::socket m_socket;
 	char readMessage_[sizeof(TMessage)];
 };

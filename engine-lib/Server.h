@@ -23,9 +23,9 @@ private:
 	void MulticastNumberOfConnectedClients();
 
 private:
-	std::set<boost::shared_ptr<tcp::socket>> participants_;
-	boost::asio::io_context& ioContext_;
-	boost::asio::ip::tcp::endpoint endPoint_;
-	tcp::acceptor acceptor_;
-	int numberOfConnectedClients_;
+	std::set<boost::shared_ptr<tcp::socket>> m_participants;
+	boost::asio::io_context& m_ioContext;
+	boost::asio::ip::tcp::endpoint m_endPoint;
+	tcp::acceptor m_acceptor;
+	int m_numberOfConnectedClients;
 };

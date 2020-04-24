@@ -4,13 +4,13 @@
 #include "Client.h"
 
 Client::Client(boost::asio::io_context& ioContext, const boost::asio::ip::address& ip, const int port)
-	: socket_(ioContext), endPoint_(ip, port)
+	: m_socket(ioContext), m_endPoint(ip, port)
 {
 }
 
 void Client::Start()
 {
-	socket_.async_connect(endPoint_,
+	m_socket.async_connect(m_endPoint,
 		boost::bind(&Client::HandleConnect, shared_from_this(), boost::asio::placeholders::error));
 }
 
@@ -19,7 +19,7 @@ void Client::HandleConnect(const boost::system::error_code& error)
 	if (!error)
 	{
 		std::cout << "Connection is UP\n";
-		boost::asio::async_read(socket_,
+		boost::asio::async_read(m_socket,
 			boost::asio::buffer(readMessage_, sizeof(TMessage)),
 			boost::bind(&Client::HandleRead, shared_from_this(), boost::asio::placeholders::error));
 	}
@@ -34,7 +34,7 @@ void Client::HandleRead(const boost::system::error_code& error)
 	if (!error)
 	{
 		std::cout << "Connected clients: " << *(int *)readMessage_ << "\n";
-		boost::asio::async_read(socket_,
+		boost::asio::async_read(m_socket,
 			boost::asio::buffer(readMessage_, sizeof(TMessage)),
 			boost::bind(&Client::HandleRead, shared_from_this(), boost::asio::placeholders::error));
 	}
@@ -46,5 +46,5 @@ void Client::HandleRead(const boost::system::error_code& error)
 
 void Client::Close()
 {
-	socket_.close();
+	m_socket.close();
 }
