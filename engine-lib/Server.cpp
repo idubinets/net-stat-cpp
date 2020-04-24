@@ -29,6 +29,10 @@ void Server::StartAccept()
 
 void Server::HandleAccept(boost::shared_ptr<tcp::socket> socket, const boost::system::error_code& error)
 {
+    if (error.value() == boost::asio::error::operation_aborted) 
+    {
+        return;
+    }
 	if (!error)
 	{
 		m_participants.insert(socket);
@@ -36,9 +40,7 @@ void Server::HandleAccept(boost::shared_ptr<tcp::socket> socket, const boost::sy
 		MulticastNumberOfConnectedClients();
 		Read(socket);
 	}
-	if (error.value() != boost::asio::error::operation_aborted) {
-		StartAccept();
-	}
+	StartAccept();
 }
 
 void Server::Read(boost::shared_ptr<tcp::socket> socket)
