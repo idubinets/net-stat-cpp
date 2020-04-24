@@ -124,9 +124,9 @@ TEST_CASE("Disconnect one of the client and the other connected clients gets the
     ioContextServer.run_one();
 
     {
-	    boost::asio::io_context ioContextClient2;
-	    auto client2 = boost::make_shared<Client>(ioContextClient2, boost::asio::ip::make_address(ip), port);
-	    client2->Start();
+        boost::asio::io_context ioContextClient2;
+        auto client2 = boost::make_shared<Client>(ioContextClient2, boost::asio::ip::make_address(ip), port);
+        client2->Start();
     }
 
     ioContextServer.run_one();
