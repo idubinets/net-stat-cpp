@@ -9,7 +9,7 @@ using boost::asio::ip::tcp;
 
 class Client : public boost::enable_shared_from_this<Client> {
 public:
-	Client(boost::asio::io_context& io_context, const boost::asio::ip::address& ip, const int port);
+	Client(boost::asio::io_context& ioContext, const boost::asio::ip::address& ip, const int port);
 	void Start();
 
 private:
@@ -18,7 +18,7 @@ private:
 	void Close();
 
 private:
-	tcp::endpoint endpoint_;
+	tcp::endpoint endPoint_;
 	tcp::socket socket_;
 	char readMessage_[sizeof(TMessage)];
 };

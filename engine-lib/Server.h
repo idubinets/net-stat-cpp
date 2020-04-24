@@ -10,7 +10,7 @@ using boost::asio::ip::tcp;
 
 class Server : public boost::enable_shared_from_this<Server> {
 public:
-	Server(boost::asio::io_context& io_context, const boost::asio::ip::address& ip, const int port);
+	Server(boost::asio::io_context& ioContext, const boost::asio::ip::address& ip, const int port);
 	void Start();
 
 private:
@@ -24,8 +24,8 @@ private:
 
 private:
 	std::set<boost::shared_ptr<tcp::socket>> participants_;
-	boost::asio::io_context& io_context_;
-	boost::asio::ip::tcp::endpoint endpoint_;
+	boost::asio::io_context& ioContext_;
+	boost::asio::ip::tcp::endpoint endPoint_;
 	tcp::acceptor acceptor_;
 	int numberOfConnectedClients_;
 };

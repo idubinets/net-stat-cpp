@@ -14,8 +14,8 @@ TEST_CASE("Server starts listening to connections",
 	std::streambuf* oldStream = std::cout.rdbuf(stream.rdbuf());
 	std::string ip = "127.0.0.1";
 	int port = 30001;
-	boost::asio::io_context io_context_server;
-	auto server = boost::make_shared<Server>(io_context_server, boost::asio::ip::make_address(ip), port);
+	boost::asio::io_context ioContextServer;
+	auto server = boost::make_shared<Server>(ioContextServer, boost::asio::ip::make_address(ip), port);
 
 	REQUIRE_NOTHROW(server->Start());
 
@@ -29,15 +29,15 @@ TEST_CASE("Client connects to the server",
 	std::streambuf* oldStream = std::cout.rdbuf(stream.rdbuf());
 	std::string ip = "127.0.0.1";
 	int port = 30001;
-	boost::asio::io_context io_context_server;
-	auto server = boost::make_shared<Server>(io_context_server, boost::asio::ip::make_address(ip), port);
+	boost::asio::io_context ioContextServer;
+	auto server = boost::make_shared<Server>(ioContextServer, boost::asio::ip::make_address(ip), port);
 
 	server->Start();
-	boost::asio::io_context io_context_client;
-	auto client = boost::make_shared<Client>(io_context_client, boost::asio::ip::make_address(ip), port);
+	boost::asio::io_context ioContextClient;
+	auto client = boost::make_shared<Client>(ioContextClient, boost::asio::ip::make_address(ip), port);
 	REQUIRE_NOTHROW(client->Start());
 
-	io_context_client.run_one();
+	ioContextClient.run_one();
 	std::string text = stream.str();
 	REQUIRE(text == "Connection is UP\n");
 
@@ -51,17 +51,17 @@ TEST_CASE("Client gets information from the server about the amount of connected
 	std::streambuf* oldStream = std::cout.rdbuf(stream.rdbuf());
 	std::string ip = "127.0.0.1";
 	int port = 30001;
-	boost::asio::io_context io_context_server;
-	auto server = boost::make_shared<Server>(io_context_server, boost::asio::ip::make_address(ip), port);
+	boost::asio::io_context ioContextServer;
+	auto server = boost::make_shared<Server>(ioContextServer, boost::asio::ip::make_address(ip), port);
 
 	server->Start();
-	boost::asio::io_context io_context_client;
-	auto client = boost::make_shared<Client>(io_context_client, boost::asio::ip::make_address(ip), port);
+	boost::asio::io_context ioContextClient;
+	auto client = boost::make_shared<Client>(ioContextClient, boost::asio::ip::make_address(ip), port);
 	client->Start();
 
-	io_context_client.run_one();
-	io_context_server.run_one();
-	io_context_client.run_one();
+	ioContextClient.run_one();
+	ioContextServer.run_one();
+	ioContextClient.run_one();
 	std::string text = stream.str();
 	REQUIRE(text == "Connection is UP\nConnected clients: 1\n");
 
@@ -75,27 +75,27 @@ TEST_CASE("Connect one more client and they both received the message with \"cli
 	std::streambuf* oldStream = std::cout.rdbuf(stream.rdbuf());
 	std::string ip = "127.0.0.1";
 	int port = 30001;
-	boost::asio::io_context io_context_server;
-	auto server = boost::make_shared<Server>(io_context_server, boost::asio::ip::make_address(ip), port);
+	boost::asio::io_context ioContextServer;
+	auto server = boost::make_shared<Server>(ioContextServer, boost::asio::ip::make_address(ip), port);
 
 	server->Start();
-	boost::asio::io_context io_context_client_1;
-	auto client_1 = boost::make_shared<Client>(io_context_client_1, boost::asio::ip::make_address(ip), port);
-	client_1->Start();
+	boost::asio::io_context ioContextClient1;
+	auto client1 = boost::make_shared<Client>(ioContextClient1, boost::asio::ip::make_address(ip), port);
+	client1->Start();
 
-	io_context_client_1.run_one();
-	io_context_server.run_one();
-	io_context_client_1.run_one();
-	io_context_server.run_one();
+	ioContextClient1.run_one();
+	ioContextServer.run_one();
+	ioContextClient1.run_one();
+	ioContextServer.run_one();
 
-	boost::asio::io_context io_context_client_2;
-	auto client_2 = boost::make_shared<Client>(io_context_client_2, boost::asio::ip::make_address(ip), port);
-	client_2->Start();
+	boost::asio::io_context ioContextClient2;
+	auto client2 = boost::make_shared<Client>(ioContextClient2, boost::asio::ip::make_address(ip), port);
+	client2->Start();
 
-	io_context_client_2.run_one();
-	io_context_server.run_one();
-	io_context_client_1.run_one();
-	io_context_client_2.run_one();
+	ioContextClient2.run_one();
+	ioContextServer.run_one();
+	ioContextClient1.run_one();
+	ioContextClient2.run_one();
 
 	std::string text = stream.str();
 	REQUIRE(text == "Connection is UP\nConnected clients: 1\nConnection is UP\nConnected clients: 2\nConnected clients: 2\n");
@@ -110,31 +110,31 @@ TEST_CASE("Disconnect one of the client and the other connected clients gets the
 	std::streambuf* oldStream = std::cout.rdbuf(stream.rdbuf());
 	std::string ip = "127.0.0.1";
 	int port = 30001;
-	boost::asio::io_context io_context_server;
-	auto server = boost::make_shared<Server>(io_context_server, boost::asio::ip::make_address(ip), port);
+	boost::asio::io_context ioContextServer;
+	auto server = boost::make_shared<Server>(ioContextServer, boost::asio::ip::make_address(ip), port);
 
 	server->Start();
-	boost::asio::io_context io_context_client_1;
-	auto client_1 = boost::make_shared<Client>(io_context_client_1, boost::asio::ip::make_address(ip), port);
-	client_1->Start();
+	boost::asio::io_context ioContextClient1;
+	auto client1 = boost::make_shared<Client>(ioContextClient1, boost::asio::ip::make_address(ip), port);
+	client1->Start();
 
-	io_context_client_1.run_one();
-	io_context_server.run_one();
-	io_context_client_1.run_one();
-	io_context_server.run_one();
+	ioContextClient1.run_one();
+	ioContextServer.run_one();
+	ioContextClient1.run_one();
+	ioContextServer.run_one();
 
 	{
-		boost::asio::io_context io_context_client_2;
-		auto client_2 = boost::make_shared<Client>(io_context_client_2, boost::asio::ip::make_address(ip), port);
-		client_2->Start();
+		boost::asio::io_context ioContextClient2;
+		auto client2 = boost::make_shared<Client>(ioContextClient2, boost::asio::ip::make_address(ip), port);
+		client2->Start();
 	}
 
-	io_context_server.run_one();
-	io_context_client_1.run_one();
-	io_context_server.run_one();
-	io_context_server.run_one();
-	io_context_server.run_one();
-	io_context_client_1.run_one();
+	ioContextServer.run_one();
+	ioContextClient1.run_one();
+	ioContextServer.run_one();
+	ioContextServer.run_one();
+	ioContextServer.run_one();
+	ioContextClient1.run_one();
 
 	std::string text = stream.str();
 	REQUIRE(text == "Connection is UP\nConnected clients: 1\nConnected clients: 2\nConnected clients: 1\n");

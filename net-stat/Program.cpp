@@ -34,17 +34,17 @@ int main(int argc, char* argv[]){
 			return 0;
 		}
 		if (vm.count(serverOptionName)) {
-			boost::asio::io_context io_context;
-			auto server = boost::make_shared<Server>(io_context, boost::asio::ip::make_address(ip), port);
+			boost::asio::io_context ioContext;
+			auto server = boost::make_shared<Server>(ioContext, boost::asio::ip::make_address(ip), port);
 			server->Start();
-			io_context.run();
+			ioContext.run();
 		}
 		else {
 			if (vm.count(clientOptionName)) {
-				boost::asio::io_context io_context;
-				auto client = boost::make_shared<Client>(io_context, boost::asio::ip::make_address(ip), port);
+				boost::asio::io_context ioContext;
+				auto client = boost::make_shared<Client>(ioContext, boost::asio::ip::make_address(ip), port);
 				client->Start();
-				io_context.run();
+				ioContext.run();
 			}
 			else {
 				std::cout << "Neither client nor server were selected" << std::endl;

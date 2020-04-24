@@ -7,22 +7,22 @@
 
 using boost::asio::ip::tcp;
 
-Server::Server(boost::asio::io_context& io_context, const boost::asio::ip::address& ip, const int port)
-	: io_context_(io_context), endpoint_(ip, port), acceptor_(io_context), numberOfConnectedClients_(0)
+Server::Server(boost::asio::io_context& ioContext, const boost::asio::ip::address& ip, const int port)
+	: ioContext_(ioContext), endPoint_(ip, port), acceptor_(ioContext), numberOfConnectedClients_(0)
 {
 }
 
 void Server::Start()
 {
-	acceptor_.open(endpoint_.protocol());
-	acceptor_.bind(endpoint_);
+	acceptor_.open(endPoint_.protocol());
+	acceptor_.bind(endPoint_);
 	acceptor_.listen();
 	StartAccept();
 }
 
 void Server::StartAccept()
 {
-	auto socket = boost::make_shared<tcp::socket>(io_context_);
+	auto socket = boost::make_shared<tcp::socket>(ioContext_);
 	acceptor_.async_accept(*socket,
 		boost::bind(&Server::HandleAccept, shared_from_this(), socket, boost::asio::placeholders::error));
 }
@@ -59,7 +59,7 @@ void Server::HandleRead(boost::shared_ptr<tcp::socket> socket, boost::shared_ptr
 	}
 }
 
-void Server::Write(boost::shared_ptr<tcp::socket> socket, boost::shared_ptr<char[]>  buffer)
+void Server::Write(boost::shared_ptr<tcp::socket> socket, boost::shared_ptr<char[]> buffer)
 {
 	boost::asio::async_write(*socket,
 		boost::asio::buffer(&buffer[0], sizeof(TMessage)),
