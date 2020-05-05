@@ -1,6 +1,7 @@
 set(HEADERS
 Client.h
 Server.h
+TMessage.h
 )
 
 set(SOURCES
@@ -14,5 +15,5 @@ ${SOURCES} ${HEADERS}
 
 add_library(engine-lib STATIC ${PROJECT_CONTENT})
 
-target_include_directories(engine-lib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(engine-lib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} PUBLIC ${Boost_INCLUDE_DIR})
                           
