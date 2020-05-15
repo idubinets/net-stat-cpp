@@ -15,6 +15,7 @@ add_executable(tests ${PROJECT_CONTENT})
 set(LIBRARIES
 Catch2::Catch2
 engine-lib 
+${Boost_LIBRARIES}
 )
 
-target_link_libraries(tests ${LIBRARIES})
+target_link_libraries(tests PRIVATE ${LIBRARIES})

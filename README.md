@@ -11,6 +11,7 @@ options:
   --help                produce help message  
   --server              create server  
   --client              create client  
+  --snmp                create snmpClient  
   --ip arg (=127.0.0.1) set ip  
   --port arg (=30001)   set port  
  

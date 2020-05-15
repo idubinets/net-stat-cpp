@@ -12,6 +12,7 @@ ${SOURCES} ${HEADERS}
 add_executable(net-stat ${PROJECT_CONTENT})
 
 set(LIBRARIES
+snmp-client
 engine-lib 
 ${Boost_LIBRARIES}
 )
