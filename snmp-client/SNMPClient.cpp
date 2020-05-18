@@ -55,7 +55,7 @@ std::string SNMPClient::MillisecondsToTime(std::chrono::milliseconds ms)
     return time.str();
 }
 
-int SNMPClient::AsynchResponse(int operation, struct snmp_session *snmpSession, int reqId,
+int SNMPClient::AsyncResponse(int operation, struct snmp_session *snmpSession, int reqId,
     struct snmp_pdu *snmpPdu, void *magic)
 {
     if (operation == NETSNMP_CALLBACK_OP_RECEIVED_MESSAGE && snmpPdu->errstat == SNMP_ERR_NOERROR) {
@@ -76,7 +76,7 @@ void SNMPClient::Connect(const std::string& ip)
     snmpSession.peername = const_cast<char *>(ip.c_str());
     snmpSession.community = static_cast<u_char *>(static_cast<void *>(const_cast<char *>(m_community.c_str())));
     snmpSession.community_len = m_community.size();
-    snmpSession.callback = AsynchResponse;
+    snmpSession.callback = AsyncResponse;
     snmpSession.callback_magic = snmpResponse.get();    
     m_snmpHandle = snmp_sess_open(&snmpSession);
     netsnmp_transport *transport = snmp_sess_transport(m_snmpHandle);

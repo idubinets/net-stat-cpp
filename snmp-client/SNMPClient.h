@@ -34,7 +34,7 @@ public:
 
 private:
     void Connect(const std::string& ip);
-    int static AsynchResponse(int operation, struct snmp_session *snmpSession, int reqId,
+    int static AsyncResponse(int operation, struct snmp_session *snmpSession, int reqId,
         struct snmp_pdu *snmpPdu, void *magic);
     void AsyncSnmpGet(const std::string& snmpOid,
         std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise, SNMPHandler handler);
