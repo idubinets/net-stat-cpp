@@ -20,5 +20,5 @@ private:
 private:
     tcp::endpoint m_endPoint;
     tcp::socket m_socket;
-    char readMessage_[sizeof(TMessage)];
+    char m_readMessage[sizeof(TMessage)];
 };

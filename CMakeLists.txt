@@ -19,6 +19,11 @@ thread
 
 find_package(Catch2 REQUIRED)
 
+find_path(NetSNMPIncludeDir "net-snmp")
+
+find_library(NetSNMP "netsnmp")
+
 add_subdirectory(tests)
 add_subdirectory(engine-lib)
+add_subdirectory(snmp-client)
 add_subdirectory(net-stat)

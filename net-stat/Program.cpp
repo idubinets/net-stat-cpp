@@ -1,11 +1,23 @@
 #include <Server.h>
 #include <Client.h>
+#include <SNMPClient.h>
 
 #include <iostream>
+#include <memory>
 #include <boost/program_options.hpp>
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
+
+void HandleTestSystem(const std::shared_ptr<SNMPResponse>& snmpResponse, const boost::system::error_code& error)
+{
+    if (error) {
+        std::cout << "System is down\n";
+    }
+    else {
+        std::cout << "System is reachable\nUP time: " << snmpResponse->upTime << "\n";
+    }
+}
 
 int main(int argc, char* argv[]){
     try {
@@ -14,6 +26,7 @@ int main(int argc, char* argv[]){
         const std::string helpOptionName = "help";
         const std::string serverOptionName = "server";
         const std::string clientOptionName = "client";
+        const std::string snmpClientOptionName = "snmp";
         const std::string ipOptionName = "ip";
         const std::string portOptionName = "port";
 
@@ -22,13 +35,14 @@ int main(int argc, char* argv[]){
             (helpOptionName.c_str(), "produce help message")
             (serverOptionName.c_str(), "create server")
             (clientOptionName.c_str(), "create client")
+            (snmpClientOptionName.c_str(), "create snmpClient")
             (ipOptionName.c_str(), boost::program_options::value<std::string>(&ip)->default_value("127.0.0.1"), "set ip")
             (portOptionName.c_str(), boost::program_options::value<int>(&port)->default_value(30001), "set port")
             ;
         boost::program_options::variables_map vm;
         boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
         boost::program_options::notify(vm);
-		
+		        
         if (vm.count(helpOptionName)) {
             std::cout << "Usage: options_description [options]\n" << desc;
             return 0;
@@ -47,8 +61,16 @@ int main(int argc, char* argv[]){
                 ioContext.run();
             }
             else {
-                std::cout << "Neither client nor server were selected" << std::endl;
-                return 1;
+                if (vm.count(snmpClientOptionName)) {
+                    boost::asio::io_context ioContext;          
+                    auto snmpClient = std::make_shared<SNMPClient>(ioContext);
+                    snmpClient->TestSystem(ip, HandleTestSystem);                   
+                    ioContext.run();                   
+                }
+                else {
+                    std::cout << "Neither client nor server were selected" << std::endl;
+                    return 1;
+                }
             }
         }
     }
