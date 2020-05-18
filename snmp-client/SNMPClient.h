@@ -30,7 +30,7 @@ class SNMPClient : public std::enable_shared_from_this<SNMPClient>
 public:
     SNMPClient(boost::asio::io_context& ioContext);
     ~SNMPClient();
-    std::future<std::shared_ptr<SNMPResponse>> TestSystem(const std::string& ip, SNMPHandler handler = nullptr);
+    std::future<std::shared_ptr<SNMPResponse>> TestSystem(const std::string& ip, SNMPHandler handler = nullptr);   
 
     std::shared_ptr<SNMPResponse> snmpResponse;
 
@@ -40,15 +40,15 @@ private:
         struct snmp_pdu *snmpPdu, void *magic);
     void AsyncSnmpGet(const std::string& snmpOid,
         std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise, SNMPHandler handler);
-    void HandleSnmpRequest(struct snmp_pdu *snmpPdu, std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise,
+    void HandleSnmpRequest(std::shared_ptr<snmp_pdu> snmpPdu, std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise,
         SNMPHandler handler, const boost::system::error_code &error);
-    void HandleSnmpResponse(std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise,
+    void HandleSnmpResponse(std::shared_ptr<snmp_pdu> snmpPdu, std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise,
         SNMPHandler handler, const boost::system::error_code &error);
-    std::string MillisecondsToTime(std::chrono::milliseconds ms);
+    static std::string MillisecondsToTime(std::chrono::milliseconds ms);
     void HandleDeadline();
     void HandleError(std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise, 
         const boost::system::error_code &error, SNMPHandler handler = nullptr);
-        
+         
     const long m_version;
     const std::string m_community;
     const std::string m_snmpOid;

@@ -61,8 +61,8 @@ int SNMPClient::AsynchResponse(int operation, struct snmp_session *snmpSession, 
     if (operation == NETSNMP_CALLBACK_OP_RECEIVED_MESSAGE && snmpPdu->errstat == SNMP_ERR_NOERROR) {
         if (snmpPdu->variables) {
             struct variable_list *vars = snmpPdu->variables;
-            SNMPClient* client = static_cast<SNMPClient*>(magic);
-            client->snmpResponse->upTime = client->MillisecondsToTime(static_cast<std::chrono::milliseconds>(vars->val.counter64->high * 10));
+            SNMPResponse* snmpResponse = static_cast<SNMPResponse*>(magic);
+            snmpResponse->upTime = SNMPClient::MillisecondsToTime(static_cast<std::chrono::milliseconds>(vars->val.counter64->high * 10));
         }
     }
     return 1;
@@ -77,7 +77,7 @@ void SNMPClient::Connect(const std::string& ip)
     snmpSession.community = static_cast<u_char *>(static_cast<void *>(const_cast<char *>(m_community.c_str())));
     snmpSession.community_len = m_community.size();
     snmpSession.callback = AsynchResponse;
-    snmpSession.callback_magic = this;    
+    snmpSession.callback_magic = snmpResponse.get();    
     m_snmpHandle = snmp_sess_open(&snmpSession);
     netsnmp_transport *transport = snmp_sess_transport(m_snmpHandle);
     m_snmpSocket.assign(boost::asio::ip::udp::v4(), transport->sock);
@@ -86,8 +86,7 @@ void SNMPClient::Connect(const std::string& ip)
 
 void SNMPClient::AsyncSnmpGet(const std::string& snmpOid,
     std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise, SNMPHandler handler)
-{
-    struct snmp_pdu *snmpPdu = nullptr;
+{    
     oid anOID[MAX_OID_LEN];
     size_t anOIDLength = MAX_OID_LEN;
     if (!snmp_parse_oid(snmpOid.c_str(), anOID, &anOIDLength)) {
@@ -95,26 +94,29 @@ void SNMPClient::AsyncSnmpGet(const std::string& snmpOid,
         HandleError(promise, error, handler);
         return;
     }
-    snmpPdu = snmp_pdu_create(SNMP_MSG_GET);
+    struct snmp_pdu *snmpPdu = snmp_pdu_create(SNMP_MSG_GET);
     snmp_add_null_var(snmpPdu, anOID, anOIDLength);
+    std::shared_ptr<struct snmp_pdu> snmpPduPtr(snmpPdu, [](snmp_pdu *pdu) {
+        snmp_free_pdu(pdu);
+    });
     m_snmpSocket.async_send(boost::asio::null_buffers(),
-        boost::bind(&SNMPClient::HandleSnmpRequest, shared_from_this(), snmpPdu, promise, handler, boost::asio::placeholders::error));
+        boost::bind(&SNMPClient::HandleSnmpRequest, shared_from_this(), snmpPduPtr, promise, handler, boost::asio::placeholders::error));
 }
 
-void SNMPClient::HandleSnmpRequest(struct snmp_pdu *snmpPdu, std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise,
+void SNMPClient::HandleSnmpRequest(std::shared_ptr<snmp_pdu> snmpPdu, std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise,
     SNMPHandler handler, const boost::system::error_code &error)
 {
     if (error) {
         HandleError(promise, error, handler);
     }
     else {
-        snmp_sess_send(m_snmpHandle, snmpPdu);    
+        snmp_sess_send(m_snmpHandle, snmpPdu.get());    
         m_snmpSocket.async_receive(boost::asio::null_buffers(),
-            boost::bind(&SNMPClient::HandleSnmpResponse, shared_from_this(), promise, handler, boost::asio::placeholders::error));
+            boost::bind(&SNMPClient::HandleSnmpResponse, shared_from_this(), snmpPdu, promise, handler, boost::asio::placeholders::error));
     }  
 }
 
-void SNMPClient::HandleSnmpResponse(std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise,
+void SNMPClient::HandleSnmpResponse(std::shared_ptr<snmp_pdu> snmpPdu, std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise,
     SNMPHandler handler, const boost::system::error_code &error)
 {    
     if (error) {
