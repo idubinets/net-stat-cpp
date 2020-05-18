@@ -35,10 +35,10 @@ void SNMPClient::HandleError(std::shared_ptr<std::promise<std::shared_ptr<SNMPRe
 {
     m_deadline.cancel();
     snmpResponse->error = error;
-    if (handler != nullptr) {
-        handler(snmpResponse, error);
-    }
     promise->set_value(snmpResponse);
+    if (handler != nullptr) {
+        boost::asio::post(boost::bind(handler, snmpResponse, error));
+    }    
 }
 
 std::string SNMPClient::MillisecondsToTime(std::chrono::milliseconds ms)
@@ -128,9 +128,9 @@ void SNMPClient::HandleSnmpResponse(std::shared_ptr<snmp_pdu> snmpPdu, std::shar
         FD_ZERO(&snmpFds);
         FD_SET(m_snmpSocket.native_handle(), &snmpFds);
         snmp_sess_read(m_snmpHandle, &snmpFds);
-        if (handler != nullptr) {
-            handler(snmpResponse, error);
-        }
         promise->set_value(snmpResponse);
+        if (handler != nullptr) {
+            boost::asio::post(boost::bind(handler, snmpResponse, error));
+        }        
     }   
 }
