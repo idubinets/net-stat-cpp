@@ -32,8 +32,6 @@ public:
     ~SNMPClient();
     std::future<std::shared_ptr<SNMPResponse>> TestSystem(const std::string& ip, SNMPHandler handler = nullptr);   
 
-    std::shared_ptr<SNMPResponse> snmpResponse;
-
 private:
     void Connect(const std::string& ip);
     int static AsynchResponse(int operation, struct snmp_session *snmpSession, int reqId,
@@ -49,6 +47,7 @@ private:
     void HandleError(std::shared_ptr<std::promise<std::shared_ptr<SNMPResponse>>> promise, 
         const boost::system::error_code &error, SNMPHandler handler = nullptr);
          
+    std::shared_ptr<SNMPResponse> snmpResponse;
     const long m_version;
     const std::string m_community;
     const std::string m_snmpOid;
